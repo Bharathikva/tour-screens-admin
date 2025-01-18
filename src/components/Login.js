@@ -12,7 +12,7 @@ const Login = () => {
 
     // Default credentials
     if (username === "test" && password === "Test@123") {
-      navigate("/dashboard");
+      navigate("/dashboard/home");
     } else {
       setError("Invalid username or password");
     }
