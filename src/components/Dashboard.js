@@ -12,9 +12,9 @@ const Dashboard = () => {
     <div className="flex h-max bg-gray-50 transition-all duration-300 ease-in-out">
       {/* Sidebar */}
       <aside
-        className={`w-64 bg-blue-900 p-6 border-r transition-transform duration-500 ease-in-out ${sidebarOpen ? "transform-none" : "-translate-x-64"
-          }`}
+        className={`${sidebarOpen ? "w-64" : "w-0"} bg-blue-900 ${sidebarOpen ? "p-6" : "p-0"} border-r transition-transform duration-500 ease-in-out ${sidebarOpen ? "transform-none" : "-translate-x-64"} `}
       >
+
         <div className="p-4 mb-6 text-white">
           <img
             src="/logo.png"
@@ -110,14 +110,14 @@ const Dashboard = () => {
 
       {/* Toggle Sidebar Button (Mobile View) */}
       <button
-        className="fixed bottom-8 right-8 bg-blue-600 text-white p-4 rounded-full shadow-lg md:hidden transform transition-all duration-300 hover:bg-blue-700"
+        className={`fixed ${sidebarOpen ? "left-60 top-24" : "left-0 top-24"} bg-blue-600 text-white rounded-full shadow-lg transform transition-all duration-300 hover:bg-blue-700`}
         onClick={() => setSidebarOpen(!sidebarOpen)}
         aria-label="Toggle Sidebar"
       >
         {sidebarOpen ? (
-          <span className="font-semibold text-lg">×</span> // Close Icon
+          <span className="font-semibold text-lg">{`<`}</span> // Close Icon
         ) : (
-          <span className="font-semibold text-lg">≡</span> // Open Icon
+          <span className="font-semibold text-lg">{`>`}</span> // Open Icon
         )}
       </button>
     </div>

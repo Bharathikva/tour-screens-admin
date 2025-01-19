@@ -13,7 +13,6 @@ function App() {
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />}>
-          <Route index element={<div>Welcome to the Dashboard</div>} />
           <Route path="home" element={<Home />} />
           <Route path="pages" element={<Pages />} />
           <Route path="reports" element={<Reports />} />
