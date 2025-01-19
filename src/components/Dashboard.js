@@ -110,16 +110,19 @@ const Dashboard = () => {
 
       {/* Toggle Sidebar Button (Mobile View) */}
       <button
-        className={`fixed ${sidebarOpen ? "left-60 top-24" : "left-0 top-24"} bg-blue-600 text-white rounded-full shadow-lg transform transition-all duration-300 hover:bg-blue-700`}
+        className={`fixed ${sidebarOpen ? "left-60" : "left-0"
+          } top-24 md:top-4 bg-blue-600 text-white rounded-full shadow-lg transform transition-all duration-300 hover:bg-blue-700 md:py-2 md:px-3 md:rounded-lg`}
         onClick={() => setSidebarOpen(!sidebarOpen)}
         aria-label="Toggle Sidebar"
       >
         {sidebarOpen ? (
-          <span className="font-semibold text-lg">{`<`}</span> // Close Icon
+          <span className="font-semibold text-lg hidden md:inline">{`<`}</span> // Close Icon for larger screens
         ) : (
-          <span className="font-semibold text-lg">{`>`}</span> // Open Icon
+          <span className="font-semibold text-lg hidden md:inline">{`>`}</span> // Open Icon for larger screens
         )}
+        <span className="font-semibold text-lg md:hidden">{sidebarOpen ? "Close" : "Open"}</span> 
       </button>
+
     </div>
   );
 };
