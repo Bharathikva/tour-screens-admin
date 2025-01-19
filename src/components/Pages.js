@@ -12,7 +12,7 @@ const Pages = () => {
 
   const handleImageUpload = async (event) => {
     const files = Array.from(event.target.files);
-    const uploadedImages = [];
+    const newUploadedImages = [];
 
     for (const file of files) {
       try {
@@ -30,7 +30,7 @@ const Pages = () => {
         console.log(data);
 
         if (data && data.data && data.data.url) {
-          uploadedImages.push({
+          newUploadedImages.push({
             id: Date.now() + file.name,
             imageUrl: data.data.url,
             annotations: [],
@@ -41,12 +41,19 @@ const Pages = () => {
       }
     }
 
-    // Store uploaded images in localStorage
-    localStorage.setItem('uploadedImages', JSON.stringify(uploadedImages));
+    // Retrieve existing images from localStorage
+    const existingImages = JSON.parse(localStorage.getItem('uploadedImages')) || [];
 
-    // Update component state if needed
-    setUploadedImages((prev) => [...prev, ...uploadedImages]);
+    // Merge existing and new images
+    const updatedImages = [...existingImages, ...newUploadedImages];
+
+    // Store the updated images in localStorage
+    localStorage.setItem('uploadedImages', JSON.stringify(updatedImages));
+
+    // Update component state
+    setUploadedImages(updatedImages);
   };
+
 
   const getUploadedImages = () => {
     // Retrieve the data from localStorage
@@ -80,7 +87,7 @@ const Pages = () => {
     setDragging(false); // Reset dragging state
 
     const files = Array.from(event.dataTransfer.files); // Access files from dataTransfer
-    const uploadedImages = [];
+    const newUploadedImages = [];
 
     for (const file of files) {
       try {
@@ -98,7 +105,7 @@ const Pages = () => {
         console.log(data);
 
         if (data && data.data && data.data.url) {
-          uploadedImages.push({
+          newUploadedImages.push({
             id: Date.now() + file.name,
             imageUrl: data.data.url,
             annotations: [],
@@ -109,12 +116,19 @@ const Pages = () => {
       }
     }
 
-    // Store uploaded images in localStorage
-    localStorage.setItem('uploadedImages', JSON.stringify(uploadedImages));
+    // Retrieve existing images from localStorage
+    const existingImages = JSON.parse(localStorage.getItem('uploadedImages')) || [];
 
-    // Update component state if needed
-    setUploadedImages((prev) => [...prev, ...uploadedImages]);
+    // Merge existing and new images
+    const updatedImages = [...existingImages, ...newUploadedImages];
+
+    // Store the updated images in localStorage
+    localStorage.setItem('uploadedImages', JSON.stringify(updatedImages));
+
+    // Update component state
+    setUploadedImages(updatedImages);
   };
+
 
 
   // Handle Delete Image
