@@ -65,11 +65,13 @@ const Pages = () => {
             ? { ...img, imageUrl: event.dataUrl }
             : img
         );
+        
 
         setUploadedImages(updatedImages);
         localStorage.setItem("uploadedImages", JSON.stringify(updatedImages));
         setSelectedImage({ ...selectedImage, imageUrl: event.dataUrl });
       });
+      markerArea.settings.defaultColor = 'white';
       markerArea.show();
     }
   };
