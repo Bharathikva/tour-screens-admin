@@ -44,9 +44,16 @@ const Pages = () => {
 
   const handleDeleteImage = (image) => {
     const updatedImages = uploadedImages.filter((img) => img.id !== image.id);
+  
+    // Reset selectedImage if no images are left or the current one is deleted
+    if (updatedImages.length === 0 || selectedImage?.id === image.id) {
+      setSelectedImage(null);
+    }
+  
     setUploadedImages(updatedImages);
     localStorage.setItem("uploadedImages", JSON.stringify(updatedImages));
   };
+  
 
   const showMarkerArea = () => {
     if (imgRef.current && selectedImage) {
@@ -63,7 +70,6 @@ const Pages = () => {
         localStorage.setItem("uploadedImages", JSON.stringify(updatedImages));
         setSelectedImage({ ...selectedImage, imageUrl: event.dataUrl });
       });
-
       markerArea.show();
     }
   };
@@ -116,7 +122,7 @@ const Pages = () => {
       </div>
 
       {/* Right Section */}
-      <div className="flex-1 bg-white p-6 ">
+      <div className="flex-1 bg-white p-5">
         {selectedImage ? (
           <div className="w-full flex justify-center items-center" onClick={()=> showMarkerArea()}>
                
@@ -124,7 +130,7 @@ const Pages = () => {
               ref={imgRef}
               src={selectedImage.imageUrl}
               alt="Selected for Annotation"
-              className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-lg border-2 border-sky-500"
+              className="max-w-full max-h-[70vh] object-contain rounded-lg shadow-lg"
             />
           </div>
         ) : ( 
