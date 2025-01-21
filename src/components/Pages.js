@@ -1,11 +1,18 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import * as markerjs2 from "markerjs2";
 
 const Pages = () => {
-  const [uploadedImages, setUploadedImages] = useState([]); // Uploaded images state
-  const [selectedImage, setSelectedImage] = useState(null); // Selected image for annotation
-  const imgRef = useRef(null); // Reference for the selected image element
+  const [uploadedImages, setUploadedImages] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [isMarkerActive, setIsMarkerActive] = useState(false);
+  const imgRef = useRef(null);
+
+  useEffect(() => {
+    // Load images from localStorage on component mount
+    const storedImages = localStorage.getItem("uploadedImages");
+    setUploadedImages(storedImages ? JSON.parse(storedImages) : []);
+  }, []);
 
   const handleImageUpload = (event) => {
     const files = Array.from(event.target.files);
@@ -15,63 +22,64 @@ const Pages = () => {
       const reader = new FileReader();
       reader.onload = () => {
         newUploadedImages.push({
-          id: Date.now() + file.name,
-          imageUrl: reader.result, // Base64 string
-          annotations: [], // Initial annotations
+          id: Date.now() + Math.random(), // Unique ID
+          imageUrl: reader.result,
+          annotations: [],
         });
 
-        // Update state and localStorage after reading all files
         if (newUploadedImages.length === files.length) {
-          const existingImages = JSON.parse(localStorage.getItem("uploadedImages")) || [];
-          const updatedImages = [...existingImages, ...newUploadedImages];
-          localStorage.setItem("uploadedImages", JSON.stringify(updatedImages));
+          const updatedImages = [...uploadedImages, ...newUploadedImages];
           setUploadedImages(updatedImages);
+          localStorage.setItem("uploadedImages", JSON.stringify(updatedImages));
         }
       };
       reader.readAsDataURL(file);
     });
   };
 
-  const getUploadedImages = () => {
-    const storedImages = localStorage.getItem("uploadedImages");
-    return storedImages ? JSON.parse(storedImages) : [];
-  };
-
   const handleSelectImage = (image) => {
+    if (isMarkerActive) {
+      alert("Marker is active. Please close the marker editor before selecting another image.");
+      return;
+    }
     setSelectedImage(image);
-    showMarkerArea();
   };
 
   const handleDeleteImage = (image) => {
     const updatedImages = uploadedImages.filter((img) => img.id !== image.id);
-  
-    // Reset selectedImage if no images are left or the current one is deleted
-    if (updatedImages.length === 0 || selectedImage?.id === image.id) {
-      setSelectedImage(null);
-    }
-  
     setUploadedImages(updatedImages);
     localStorage.setItem("uploadedImages", JSON.stringify(updatedImages));
+
+    // Deselect image if it's the one being deleted
+    if (selectedImage?.id === image.id) {
+      setSelectedImage(null);
+    }
   };
-  
 
   const showMarkerArea = () => {
-    if (imgRef.current && selectedImage) {
-      const markerArea = new markerjs2.MarkerArea(imgRef.current);
+    if (!imgRef.current || !selectedImage || isMarkerActive) return;
 
-      markerArea.addEventListener("render", (event) => {
-        const updatedImages = uploadedImages.map((img) =>
-          img.id === selectedImage.id
-            ? { ...img, imageUrl: event.dataUrl }
-            : img
-        );
+    const markerArea = new markerjs2.MarkerArea(imgRef.current);
+    setIsMarkerActive(true);
 
-        setUploadedImages(updatedImages);
-        localStorage.setItem("uploadedImages", JSON.stringify(updatedImages));
-        setSelectedImage({ ...selectedImage, imageUrl: event.dataUrl });
-      });
-      markerArea.show();
-    }
+    markerArea.addEventListener("render", (event) => {
+      const updatedImages = uploadedImages.map((img) =>
+        img.id === selectedImage.id
+          ? { ...img, imageUrl: event.dataUrl }
+          : img
+      );
+
+      setUploadedImages(updatedImages);
+      localStorage.setItem("uploadedImages", JSON.stringify(updatedImages));
+      setSelectedImage({ ...selectedImage, imageUrl: event.dataUrl });
+      setIsMarkerActive(false);
+    });
+
+    markerArea.addEventListener("close", () => {
+      setIsMarkerActive(false);
+    });
+    markerArea.settings.defaultColor = "white";
+    markerArea.show();
   };
 
   return (
@@ -96,10 +104,10 @@ const Pages = () => {
         </div>
 
         <div className="overflow-y-auto max-h-[400px] space-y-4">
-          {getUploadedImages().map((image) => (
+          {uploadedImages.map((image) => (
             <div
               key={image.id}
-              className="w-full flex justify-center items-center relative"
+              className="w-full flex justify-center items-center relative cursor-pointer"
               onClick={() => handleSelectImage(image)}
             >
               <img
@@ -124,8 +132,10 @@ const Pages = () => {
       {/* Right Section */}
       <div className="flex-1 bg-white p-5">
         {selectedImage ? (
-          <div className="w-full flex justify-center items-center" onClick={()=> showMarkerArea()}>
-               
+          <div
+            className="w-full flex justify-center items-center"
+            onClick={showMarkerArea}
+          >
             <img
               ref={imgRef}
               src={selectedImage.imageUrl}
@@ -133,8 +143,7 @@ const Pages = () => {
               className="max-w-full max-h-[70vh] object-contain rounded-lg shadow-lg"
             />
           </div>
-        ) : ( 
-          
+        ) : (
           <p className="text-center text-gray-600">Select an image to preview it here.</p>
         )}
       </div>
