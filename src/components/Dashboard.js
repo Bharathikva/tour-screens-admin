@@ -4,6 +4,8 @@ import { FiHome, FiFileText, FiBarChart2, FiLogOut } from "react-icons/fi"; // I
 import Pages from "./Pages"; // Import child components
 import Reports from "./Reports";
 import Home from "./Home"
+import './styles.css';
+
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
