@@ -125,13 +125,13 @@ const Pages = () => {
         </div>
 
         <div className="overflow-y-auto max-h-[400px] space-y-4">
-        <button
-              onClick={openPopup}
-              type="button"
-              className="absolute top-24 right-10 text-center bg-gray-200 p-2 rounded-full hover:bg-gray-300"
-            >
-              <FiEye className="text-red-600" />
-            </button>
+          <button
+            onClick={openPopup}
+            type="button"
+            className="absolute top-24 right-10 text-center bg-gray-200 p-2 rounded-full hover:bg-gray-300"
+          >
+            <FiEye className="text-red-600" />
+          </button>
           {uploadedImages.map((image) => (
             <div
               key={image.id}
@@ -171,7 +171,7 @@ const Pages = () => {
               alt="Selected for Annotation"
               className="max-w-full max-h-[70vh] object-contain rounded-lg shadow-lg"
             />
-            
+
           </div>
         ) : (
           <p className="text-center text-gray-600">Select an image to preview it here.</p>
@@ -179,41 +179,44 @@ const Pages = () => {
       </div>
       {isPopupOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="relative w-[280px] h-[550px] bg-gray-900 rounded-3xl p-3 shadow-lg">
-            <div className="absolute top-3 left-1/2 transform -translate-x-1/2 w-24 h-2 bg-gray-500 rounded"></div>
-            <img
-              src={uploadedImages[currentImageIndex].imageUrl}
-              alt="Popup Preview"
-              className="w-full h-full object-contain rounded-lg"
-            />
-
-            {/* Updated Alignment for Buttons */}
-            <div className="flex justify-center gap-4 mt-4">
-              <button
-                onClick={handlePreviousImage}
-                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
-              >
-                <FiArrowLeft className="text-red-600" />
-
-              </button>
-              <button
-                onClick={handleNextImage}
-                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
-              >
-                <FiArrowRight className="text-red-600" />
-
-              </button>
-              <button
-                onClick={closePopup}
-                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
-              >
-                ✕
-              </button>
+          <div className="relative mx-auto border-gray-800 dark:border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px]">
+            <div className="h-[32px] w-[3px] bg-gray-800 dark:bg-gray-800 absolute -start-[17px] top-[72px] rounded-s-lg"></div>
+            <div className="h-[46px] w-[3px] bg-gray-800 dark:bg-gray-800 absolute -start-[17px] top-[124px] rounded-s-lg"></div>
+            <div className="h-[46px] w-[3px] bg-gray-800 dark:bg-gray-800 absolute -start-[17px] top-[178px] rounded-s-lg"></div>
+            <div className="h-[64px] w-[3px] bg-gray-800 dark:bg-gray-800 absolute -end-[17px] top-[142px] rounded-e-lg"></div>
+            <div className="rounded-[2rem] overflow-hidden w-[272px] h-[572px] bg-white dark:bg-gray-800 relative">
+              <img
+                src={uploadedImages[currentImageIndex].imageUrl}
+                alt="Popup Preview"
+                className="w-full h-full object-contain rounded-lg"
+              />
             </div>
+
+            {/* Left Button */}
+            <button
+              onClick={handlePreviousImage}
+              className="absolute left-[-60px] top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full hover:bg-gray-400 shadow-md"
+            >
+              <FiArrowLeft className="text-red-600 text-xl" />
+            </button>
+
+            {/* Right Button */}
+            <button
+              onClick={handleNextImage}
+              className="absolute right-[-60px] top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full hover:bg-gray-400 shadow-md"
+            >
+              <FiArrowRight className="text-red-600 text-xl" />
+            </button>
+
+            {/* Close Button */}
+            <button
+              onClick={closePopup}
+              className="absolute top-1 right-1 rounded-full text-white shadow-md"
+            >
+              ✕
+            </button>
           </div>
         </div>
-
-
       )}
 
     </div>
