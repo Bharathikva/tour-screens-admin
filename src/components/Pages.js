@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FiTrash2 } from "react-icons/fi";
+import { FiTrash2, FiEye, FiArrowLeft, FiArrowRight } from "react-icons/fi";
 import * as markerjs2 from "markerjs2";
 
 const Pages = () => {
   const [uploadedImages, setUploadedImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [isMarkerActive, setIsMarkerActive] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const imgRef = useRef(null);
 
   useEffect(() => {
@@ -82,6 +84,25 @@ const Pages = () => {
     markerArea.show();
   };
 
+  const openPopup = () => {
+    setIsPopupOpen(true);
+  };
+
+  const closePopup = () => {
+    setIsPopupOpen(false);
+  };
+
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex < uploadedImages.length - 1 ? prevIndex + 1 : 0
+    );
+  };
+
+  const handlePreviousImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex > 0 ? prevIndex - 1 : uploadedImages.length - 1
+    );
+  };
   return (
     <div className="flex flex-col lg:flex-row h-screen space-y-8 lg:space-y-0 lg:space-x-8">
       {/* Left Section */}
@@ -104,6 +125,13 @@ const Pages = () => {
         </div>
 
         <div className="overflow-y-auto max-h-[400px] space-y-4">
+        <button
+              onClick={openPopup}
+              type="button"
+              className="absolute top-24 right-10 text-center bg-gray-200 p-2 rounded-full hover:bg-gray-300"
+            >
+              <FiEye className="text-red-600" />
+            </button>
           {uploadedImages.map((image) => (
             <div
               key={image.id}
@@ -124,6 +152,7 @@ const Pages = () => {
               >
                 <FiTrash2 className="text-red-600" />
               </button>
+
             </div>
           ))}
         </div>
@@ -142,12 +171,53 @@ const Pages = () => {
               alt="Selected for Annotation"
               className="max-w-full max-h-[70vh] object-contain rounded-lg shadow-lg"
             />
+            
           </div>
         ) : (
           <p className="text-center text-gray-600">Select an image to preview it here.</p>
         )}
       </div>
+      {isPopupOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="relative w-[280px] h-[550px] bg-gray-900 rounded-3xl p-3 shadow-lg">
+            <div className="absolute top-3 left-1/2 transform -translate-x-1/2 w-24 h-2 bg-gray-500 rounded"></div>
+            <img
+              src={uploadedImages[currentImageIndex].imageUrl}
+              alt="Popup Preview"
+              className="w-full h-full object-contain rounded-lg"
+            />
+
+            {/* Updated Alignment for Buttons */}
+            <div className="flex justify-center gap-4 mt-4">
+              <button
+                onClick={handlePreviousImage}
+                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+              >
+                <FiArrowLeft className="text-red-600" />
+
+              </button>
+              <button
+                onClick={handleNextImage}
+                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+              >
+                <FiArrowRight className="text-red-600" />
+
+              </button>
+              <button
+                onClick={closePopup}
+                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        </div>
+
+
+      )}
+
     </div>
+
   );
 };
 
